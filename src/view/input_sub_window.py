@@ -1,14 +1,15 @@
-from PyQt5.QtWidgets import QDialog, QLineEdit, QPushButton, QVBoxLayout
+from PyQt5.QtWidgets import QDialog, QVBoxLayout
+from qfluentwidgets import LineEdit, PushButton
 
 
 class InputDialog(QDialog):
-    def __init__(self, parent = None):
+    def __init__(self, title: str, parent = None):
         super().__init__(parent)
-        self.setWindowTitle('Input Dialog')
+        self.setWindowTitle(title)
 
         self.layout = QVBoxLayout(self)
-        self.input = QLineEdit(self)
-        self.button = QPushButton('Confirm', self)
+        self.input = LineEdit(self)
+        self.button = PushButton('确定', self)
 
         self.layout.addWidget(self.input)
         self.layout.addWidget(self.button)

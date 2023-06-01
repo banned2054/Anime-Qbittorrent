@@ -6,6 +6,7 @@ from PyQt5.QtWidgets import QHBoxLayout, QLabel, QSizePolicy, QSpacerItem, QVBox
 from qfluentwidgets import ComboBox, PushButton
 
 from src.view.base_view import Widget
+from src.view.torrent_sub_widget import TorrentSubWidget
 
 
 class TorrentWidget(Widget):
@@ -29,6 +30,9 @@ class TorrentWidget(Widget):
         self.vBoxLayout.addItem(spacerItem)
         self.vBoxLayout.addLayout(self.hBoxLayout)
         self.vBoxLayout.addWidget(self.animeNameComboBox)
+
+        self.subWidget = TorrentSubWidget(self)
+        self.vBoxLayout.addWidget(self.subWidget)
         self.vBoxLayout.addStretch()
 
         self.initUiSize()
