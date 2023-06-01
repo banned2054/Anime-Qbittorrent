@@ -1,9 +1,9 @@
 import asyncio
 
 from PyQt5.QtCore import Qt
-from qasync import QEventLoop
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication, QHBoxLayout, QStackedWidget
+from qasync import QEventLoop
 from qfluentwidgets import FluentIcon, NavigationInterface, NavigationItemPosition, Theme, isDarkTheme, \
     qrouter, setTheme
 from qframelesswindow import FramelessWindow

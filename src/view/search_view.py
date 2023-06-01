@@ -85,27 +85,15 @@ class MyTable(TableView):
         self.setColumnWidth(3, 250)
 
 
-# class EnterSearchFilter(QObject):
-# enterPressed = pyqtSignal()
-#
-# def eventFilter(self, obj, event):
-#     if event.type() == QEvent.KeyPress and obj is SearchLineEdit:
-#         if event.key() == Qt.Key_Return or event.key() == Qt.Key_Enter:
-#             self.enterPressed.emit()
-#             return True
-#     return QObject.eventFilter(self, obj, event)
-
-
 class SearchWidget(Widget):
     def __init__(self, parent = None):
         super().__init__(parent = parent)
         self.setObjectName("search-widget")
         self.lock = asyncio.Lock()
         self.vBoxLayout = QVBoxLayout(self)
-        self.vBoxLayout.setSpacing(50)
+        self.vBoxLayout.setSpacing(20)
         self.lineEdit = SearchLineEdit(self)
         self.lineEdit.searchButton.clicked.connect(self.async_search)
-        # self.lineEdit.installEventFilter(EnterSearchFilter())
         self.lineEdit.setClearButtonEnabled(True)
         self.lineEdit.setPlaceholderText('Search icon')
         self.dataTable = MyTable()

@@ -1,7 +1,9 @@
 # coding:utf-8
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QHBoxLayout, QLabel, QVBoxLayout
-from qfluentwidgets import PushButton, TableWidget
+import sqlite3
+
+from PyQt5.QtCore import QTimer
+from PyQt5.QtWidgets import QHBoxLayout, QLabel, QSizePolicy, QSpacerItem, QVBoxLayout
+from qfluentwidgets import ComboBox, PushButton
 
 from src.view.base_view import Widget
 
@@ -11,18 +13,53 @@ class TorrentWidget(Widget):
         super().__init__(parent = parent)
         self.setObjectName("torrent-widget")
 
-        self.v_layout = QVBoxLayout(self)
-        self.h_layout = QHBoxLayout()
+        self.vBoxLayout = QVBoxLayout(self)
+        self.vBoxLayout.setSpacing(20)
 
+        self.hBoxLayout = QHBoxLayout()
         self.selectFileButton = PushButton("选择torrent文件")
         self.filePathLabel = QLabel("请选择文件")
 
-        self.h_layout.addWidget(self.filePathLabel)
-        self.h_layout.addWidget(self.selectFileButton)
+        self.hBoxLayout.addWidget(self.filePathLabel)
+        self.hBoxLayout.addWidget(self.selectFileButton)
 
-        self.tableView = TableWidget(self)
-        self.v_layout.addWidget(QLabel(), Qt.AlignCenter)
-        self.v_layout.addLayout(self.h_layout, Qt.AlignCenter)
-        self.v_layout.addWidget(self.tableView, Qt.AlignCenter)
+        self.animeNameComboBox = ComboBox(self)
 
-        self.setLayout(self.v_layout)
+        spacerItem = QSpacerItem(20, 50, QSizePolicy.Minimum, QSizePolicy.Fixed)
+        self.vBoxLayout.addItem(spacerItem)
+        self.vBoxLayout.addLayout(self.hBoxLayout)
+        self.vBoxLayout.addWidget(self.animeNameComboBox)
+        self.vBoxLayout.addStretch()
+
+        self.initUiSize()
+
+        self.setLayout(self.vBoxLayout)
+        self.sqlGetData()
+
+    def initUiSize(self):
+        self.selectFileButton.setMaximumWidth(200)
+        self.filePathLabel.setMaximumWidth(400)
+        self.animeNameComboBox.setFixedWidth(300)
+        self.freshComboBox()
+        timer = QTimer()
+        timer.timeout.connect(self.freshComboBox)  # 连接定时器的 timeout 信号到 timer_func
+        timer.start(1000)  # 启动定时器，设置间隔为 1000 毫秒（1秒）
+
+    def freshComboBox(self):
+        sqlData = self.sqlGetData()
+        self.animeNameComboBox.clear()
+        for data in sqlData:
+            print(data)
+            self.animeNameComboBox.addItem(str(data[0]))
+        self.animeNameComboBox.addItem("添加新动画")
+        if len(sqlData) > 0:
+            self.animeNameComboBox.setCurrentIndex(0)
+
+    @staticmethod
+    def sqlGetData():
+        connection = sqlite3.connect('src/data/anime.db')
+        cursor = connection.cursor()
+        cursor.execute('SELECT * FROM anime')
+        rows = cursor.fetchall()
+        connection.close()
+        return rows
