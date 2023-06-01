@@ -1,7 +1,5 @@
 import asyncio
 
-import aiohttp as aiohttp
-import yaml
 # coding:utf-8
 from PyQt5.QtCore import QUrl, Qt
 from PyQt5.QtGui import QDesktopServices, QStandardItem, QStandardItemModel
@@ -9,6 +7,7 @@ from PyQt5.QtWidgets import QApplication, QMenu, QSizePolicy, QSpacerItem, QVBox
 from qasync import asyncSlot
 from qfluentwidgets import MessageBox, SearchLineEdit, TableView
 
+from src.unit.bangumi_unit import BangumiUnit
 from src.view.base_view import Widget
 
 
@@ -41,14 +40,15 @@ class MyTable(TableView):
 
     def show_context_menu(self, position):
         menu = QMenu(self)
-        copy_action = menu.addAction("Copy URL")
+        copy_action = menu.addAction("复制bangumi id")
         copy_action.triggered.connect(self.copy_url)
         menu.exec_(self.mapToGlobal(position))
 
     def copy_url(self):
         index = self.currentIndex()
         if index.isValid():
-            text = index.data()
+            last_cell_index = index.sibling(index.row(), 3)
+            text = last_cell_index.data().split("/")[-1]
             QApplication.clipboard().setText(text)
 
     def add_row(self, data):
@@ -86,17 +86,20 @@ class MyTable(TableView):
 
 
 class SearchWidget(Widget):
-    def __init__(self, parent = None):
+    def __init__(self, dataPath: str, parent = None):
         super().__init__(parent = parent)
+        self.dataPath = dataPath
         self.setObjectName("search-widget")
         self.lock = asyncio.Lock()
         self.vBoxLayout = QVBoxLayout(self)
         self.vBoxLayout.setSpacing(20)
         self.lineEdit = SearchLineEdit(self)
+        self.lineEdit.setMaximumWidth(300)
         self.lineEdit.searchButton.clicked.connect(self.async_search)
         self.lineEdit.setClearButtonEnabled(True)
         self.lineEdit.setPlaceholderText('Search icon')
         self.dataTable = MyTable()
+        self.dataTable.setMaximumWidth(800)
 
         spacerItem = QSpacerItem(20, 50, QSizePolicy.Minimum, QSizePolicy.Fixed)
         self.vBoxLayout.addItem(spacerItem)
@@ -109,83 +112,15 @@ class SearchWidget(Widget):
         if search_keyword == "":
             return
         self.lineEdit.searchButton.setEnabled(False)
-        async with self.lock:
-            with open('C:\\Code\\Python\\Anime-Qbittorrent\\src\\data\\bangumi.yaml', 'r') as file:
-                data = yaml.safe_load(file)
-
-            bangumi_token = data['bangumi_token']
-            version = data['version']
-            result = await self.get_anime_info(version, search_keyword, bangumi_token)
-            if isinstance(result, str):
-                self.lineEdit.searchButton.setEnabled(True)
-                w = MessageBox(
-                        '错误',
-                        '搜索失败，请检查是网络问题还是搜索词不对',
-                        self
-                )
-                w.exec()
-                return
-            self.dataTable.update_data(result)
-        self.lineEdit.searchButton.setEnabled(True)
-
-    async def get_anime_info(self, version, keyword, access_token):
-
-        params = {
-            'type': 2
-        }
-        headers = {
-            "User-Agent"   : f"banned/Anime-Qbittorrent/{version} (https://github.com/banned2054/Anime-Qbittorrent)",
-            "Authorization": f"Bearer {access_token}"
-        }
-
-        url = f"https://api.bgm.tv/search/subject/{keyword}"
-        data = await self.get_request(url, headers, params)
-        result = await self.analysis_search_result(data, version, access_token)
-        return result
-
-    @staticmethod
-    async def get_request(url, headers, params = None):
-        async with aiohttp.ClientSession() as session:
-            async with session.get(url, headers = headers, params = params) as response:
-                if response.status == 200:
-                    try:
-                        data = await response.json()
-                        return data
-                    except aiohttp.ClientResponseError:
-                        return "Failed to parse JSON"
-                else:
-                    return f"Error: {response.status}"
-
-    async def analysis_search_result(self, data, version, access_token):
-        if isinstance(data, str):
-            return data
-        headers = {
-            "User-Agent"   : f"banned/Anime-Qbittorrent/{version} (https://github.com/banned2054/Anime-Qbittorrent)",
-            "Authorization": f"Bearer {access_token}"
-        }
-        if data.get("results") > 0:
-            results = []
-            for item in data.get("list", []):
-                result = {
-                    "url"    : item.get("url"),
-                    "name"   : item.get("name"),
-                    "name_cn": item.get("name_cn")
-                }
-
-                # Get subject id from url
-                subject_id = result["url"].split("/")[-1]
-
-                subject_url = f"https://api.bgm.tv/v0/subjects/{subject_id}"
-                subject_data = await self.get_request(subject_url, headers)
-                results = self.analysis_subject_result(subject_data, results, result)
-            return results
-        else:
-            return "No results found"
-
-    @staticmethod
-    def analysis_subject_result(data, results, result):
-        if isinstance(data, str):
-            return data
-        result["date"] = data.get("date")
-        results.append(result)
-        return results
+        bangumiList = await BangumiUnit.searchAnimeByKeyword(self.dataPath, search_keyword)
+        result = await BangumiUnit.getAnimeInfoByMultiBangumiId(self.dataPath, bangumiList)
+        if isinstance(result, str):
+            self.lineEdit.searchButton.setEnabled(True)
+            w = MessageBox(
+                    '错误',
+                    '搜索失败，请检查是网络问题还是搜索词不对',
+                    self
+            )
+            w.exec()
+            return
+        self.dataTable.update_data(result)

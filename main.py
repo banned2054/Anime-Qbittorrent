@@ -11,7 +11,7 @@ from qframelesswindow import FramelessWindow
 from src.view.base_view import CustomTitleBar
 from src.view.search_view import SearchWidget
 from src.view.setting_view import SettingWidget
-from src.view.torrent_widget import TorrentWidget
+from src.view.torrent_view import TorrentWidget
 
 
 class Window(FramelessWindow):
@@ -29,7 +29,7 @@ class Window(FramelessWindow):
         self.stackWidget = QStackedWidget(self)
 
         self.searchInterface = SearchWidget(self)
-        self.torrentInterface = TorrentWidget(self)
+        self.torrentInterface = TorrentWidget("src/data", self)
         self.settingInterface = SettingWidget(self)
 
         # initialize layout

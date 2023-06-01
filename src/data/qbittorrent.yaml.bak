@@ -3,3 +3,5 @@ password: null
 port: null
 tags: []
 userName: null
+animeDictionary: "([year].[month])[name_cn]"
+animeFile: "[name_cn] E[episode]"
