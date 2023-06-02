@@ -1,7 +1,8 @@
-host: null
-password: null
-port: null
+host: 127.0.0.1
+password: adminadmin
+port: 8080
 tags: []
-userName: null
+userName: admin
 animeDictionary: "([year].[month])[name_cn]"
 animeFile: "[name_cn] E[episode]"
+downloadPath: "/download/Anime"

@@ -1,3 +1,5 @@
+import asyncio
+
 from src.unit.net_unit import NetUnit
 
 
@@ -5,7 +7,7 @@ class BangumiUnit:
     @staticmethod
     async def getAnimeInfoByBangumiId(dataPath: str, bangumiId: int):
         subject_url = f"https://api.bgm.tv/v0/subjects/{bangumiId}"
-        responseData = await NetUnit.get_request(dataPath, subject_url)
+        responseData = await NetUnit.getRequest(dataPath, subject_url)
         if isinstance(responseData, str):
             return responseData
         result = {"date"   : responseData.get("date"), "name": responseData.get("name"),
@@ -16,12 +18,12 @@ class BangumiUnit:
     async def searchAnimeByKeyword(dataPath: str, keyword: str):
         params = {'type': 2}
         url = f"https://api.bgm.tv/search/subject/{keyword}"
-        responseData = await NetUnit.get_request(url, dataPath, params)
+        responseData = await NetUnit.getRequest(dataPath, url, params)
         if isinstance(responseData, str):
             return responseData
         result = []
-        for item in responseData:
-            bangumiId = int(item.get("url").split("/")[-1])
+        for item in responseData['list']:
+            bangumiId = int(item["url"].split("/")[-1])
             result.append(bangumiId)
         return result
 
@@ -34,3 +36,19 @@ class BangumiUnit:
                 continue
             result.append(item)
         return result
+
+    @staticmethod
+    async def getAnimeEpisodeInfoByBangumiId(dataPath: str, bangumiId: int):
+        url = f"https://api.bgm.tv/v0/episodes"
+        params = {"subject_id": bangumiId}
+        items = await NetUnit.getRequest(dataPath, url, params)
+        if isinstance(items, str):
+            return
+        episodes = []
+        for item in items['data']:
+            if item['ep'] != 0:
+                episodes.append(item['sort'])
+        return episodes
+
+# test
+# asyncio.run(BangumiUnit.getAnimeEpisodeInfoByBangumiId('../data', 325585))

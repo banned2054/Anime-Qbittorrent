@@ -5,7 +5,7 @@ from src.unit.file_unit import FileUnit
 
 class NetUnit:
     @staticmethod
-    async def get_request(url: str, dataPath: str, params = None):
+    async def getRequest(dataPath: str, url: str, params = None):
         bangumiSetting = FileUnit.readBangumiSettingFile(dataPath)
         headers = {
             "User-Agent"   : f"banned/Anime-Qbittorrent/{bangumiSetting['version']} (https://github.com/banned2054/Anime-Qbittorrent)",

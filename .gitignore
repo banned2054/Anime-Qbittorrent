@@ -4,3 +4,4 @@ src/view/__pycache__
 src/unit/__pycache__
 
 src/data/qbittorrent.yaml
+src/data/anime.db

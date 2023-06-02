@@ -8,6 +8,7 @@ from qfluentwidgets import FluentIcon, NavigationInterface, NavigationItemPositi
     qrouter, setTheme
 from qframelesswindow import FramelessWindow
 
+from src.unit.file_unit import FileUnit
 from src.view.base_view import CustomTitleBar
 from src.view.search_view import SearchWidget
 from src.view.setting_view import SettingWidget
@@ -28,9 +29,9 @@ class Window(FramelessWindow):
         self.navigationInterface = NavigationInterface(self, showMenuButton = True, showReturnButton = True)
         self.stackWidget = QStackedWidget(self)
 
-        self.searchInterface = SearchWidget(self)
+        self.searchInterface = SearchWidget("src/data", self)
         self.torrentInterface = TorrentWidget("src/data", self)
-        self.settingInterface = SettingWidget(self)
+        self.settingInterface = SettingWidget("src/data", self)
 
         # initialize layout
         self.init_layout()
@@ -57,11 +58,7 @@ class Window(FramelessWindow):
         self.navigationInterface.addSeparator()
         self.add_sub_interface(self.settingInterface, FluentIcon.SETTING, 'Settings', NavigationItemPosition.BOTTOM)
 
-        # !IMPORTANT: don't forget to set the default route key
         qrouter.setDefaultRouteKey(self.stackWidget, self.searchInterface.objectName())
-
-        # set the maximum width
-        # self.navigationInterface.setExpandWidth(300)
 
         self.stackWidget.currentChanged.connect(self.on_current_interface_changed)
 
@@ -106,6 +103,8 @@ if __name__ == '__main__':
     QApplication.setHighDpiScaleFactorRoundingPolicy(Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
     QApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
     QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps)
+
+    FileUnit.initQbittorrentSetting('src/data')
 
     app = QApplication([])
     loop = QEventLoop(app)

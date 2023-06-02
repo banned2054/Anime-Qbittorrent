@@ -30,10 +30,7 @@ class MyTable(TableView):
         super(MyTable, self).__init__(parent)
         self.model = MyModel(0, 4)
         self.setModel(self.model)
-        self.setColumnWidth(0, 250)
-        self.setColumnWidth(1, 200)
-        self.setColumnWidth(2, 100)
-        self.setColumnWidth(3, 250)
+        self.setColumnsWidth()
         self.setContextMenuPolicy(Qt.CustomContextMenu)
         self.verticalHeader().setVisible(False)
         self.customContextMenuRequested.connect(self.show_context_menu)
@@ -68,7 +65,7 @@ class MyTable(TableView):
             now_name = row['name']
             now_name_cn = row['name_cn']
             now_date = row['date']
-            now_url = row['url']
+            now_url = f'https://bgm.tv/subject/{row["subject_id"]}'
             standardItem1 = QStandardItem(now_name)
             standardItem1.setToolTip(now_name)
             standardItem2 = QStandardItem(now_name_cn)
@@ -78,7 +75,9 @@ class MyTable(TableView):
             standardItem4 = QStandardItem(now_url)
             standardItem4.setToolTip(now_url)
             self.model.appendRow([standardItem1, standardItem2, standardItem3, standardItem4])
+            self.setColumnsWidth()
 
+    def setColumnsWidth(self):
         self.setColumnWidth(0, 250)
         self.setColumnWidth(1, 200)
         self.setColumnWidth(2, 100)
@@ -91,23 +90,26 @@ class SearchWidget(Widget):
         self.dataPath = dataPath
         self.setObjectName("search-widget")
         self.lock = asyncio.Lock()
+
         self.vBoxLayout = QVBoxLayout(self)
-        self.vBoxLayout.setSpacing(20)
         self.lineEdit = SearchLineEdit(self)
-        self.lineEdit.setMaximumWidth(300)
-        self.lineEdit.searchButton.clicked.connect(self.async_search)
+        self.dataTable = MyTable()
+        spacerItem = QSpacerItem(20, 50, QSizePolicy.Minimum, QSizePolicy.Fixed)
+
         self.lineEdit.setClearButtonEnabled(True)
         self.lineEdit.setPlaceholderText('Search icon')
-        self.dataTable = MyTable()
+        self.lineEdit.setMaximumWidth(300)
         self.dataTable.setMaximumWidth(800)
 
-        spacerItem = QSpacerItem(20, 50, QSizePolicy.Minimum, QSizePolicy.Fixed)
+        self.lineEdit.searchButton.clicked.connect(self.searchButtonDown)
+
+        self.vBoxLayout.setSpacing(20)
         self.vBoxLayout.addItem(spacerItem)
         self.vBoxLayout.addWidget(self.lineEdit)
         self.vBoxLayout.addWidget(self.dataTable)
 
     @asyncSlot()
-    async def async_search(self):
+    async def searchButtonDown(self):
         search_keyword = self.lineEdit.text()
         if search_keyword == "":
             return
@@ -116,11 +118,7 @@ class SearchWidget(Widget):
         result = await BangumiUnit.getAnimeInfoByMultiBangumiId(self.dataPath, bangumiList)
         if isinstance(result, str):
             self.lineEdit.searchButton.setEnabled(True)
-            w = MessageBox(
-                    '错误',
-                    '搜索失败，请检查是网络问题还是搜索词不对',
-                    self
-            )
-            w.exec()
+            errorBox = MessageBox('错误', '搜索失败，请检查是网络问题还是搜索词不对', self)
+            errorBox.exec()
             return
         self.dataTable.update_data(result)
