@@ -1,0 +1,7 @@
+aiohttp
+bencodepy
+PyQt5
+PyYAML
+qasync
+qbittorrent-api
+PyQt-Fluent-Widgets

@@ -62,18 +62,18 @@ class MyTable(TableView):
         self.model.clear()  # 清除旧的数据
 
         for index, row in enumerate(data):
-            now_name = row['name']
-            now_name_cn = row['name_cn']
-            now_date = row['date']
-            now_url = f'https://bgm.tv/subject/{row["subject_id"]}'
-            standardItem1 = QStandardItem(now_name)
-            standardItem1.setToolTip(now_name)
-            standardItem2 = QStandardItem(now_name_cn)
-            standardItem2.setToolTip(now_name_cn)
-            standardItem3 = QStandardItem(now_date)
-            standardItem3.setToolTip(now_date)
-            standardItem4 = QStandardItem(now_url)
-            standardItem4.setToolTip(now_url)
+            nowName = row['name']
+            nowNameCn = row['name_cn']
+            nowDate = row['date']
+            nowUrl = f'https://bgm.tv/subject/{row["subject_id"]}'
+            standardItem1 = QStandardItem(nowName)
+            standardItem1.setToolTip(nowName)
+            standardItem2 = QStandardItem(nowNameCn)
+            standardItem2.setToolTip(nowNameCn)
+            standardItem3 = QStandardItem(nowDate)
+            standardItem3.setToolTip(nowDate)
+            standardItem4 = QStandardItem(nowUrl)
+            standardItem4.setToolTip(nowUrl)
             self.model.appendRow([standardItem1, standardItem2, standardItem3, standardItem4])
             self.setColumnsWidth()
 

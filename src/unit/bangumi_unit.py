@@ -1,5 +1,3 @@
-import asyncio
-
 from src.unit.net_unit import NetUnit
 
 

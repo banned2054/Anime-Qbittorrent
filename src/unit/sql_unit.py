@@ -33,11 +33,11 @@ class SqlUnit:
         return rows
 
     @staticmethod
-    def getDataByBangumiId(dataPath: str, bangumi_id: int):
+    def getDataByBangumiId(dataPath: str, bangumiId: int):
         connection = sqlite3.connect(f'{dataPath}/anime.db')
         cursor = connection.cursor()
         cursor.execute(
-                f'SELECT * FROM anime where bangumi_id = {bangumi_id} ORDER BY publish_year DESC, public_month DESC, public_day, name')
+                f'SELECT * FROM anime where bangumi_id = {bangumiId} ORDER BY publish_year DESC, public_month DESC, public_day, name')
         rows = cursor.fetchall()
         connection.close()
         return rows
