@@ -1,9 +1,12 @@
+import os.path
 import sqlite3
 
 
 class SqlUnit:
     @staticmethod
     def initSql(dataPath: str):
+        if os.path.exists(f'{dataPath}/anime.db'):
+            return
         connection = sqlite3.connect(f'{dataPath}/anime.db')
         cursor = connection.cursor()
         cursor.execute("""create table anime(

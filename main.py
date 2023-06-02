@@ -9,6 +9,7 @@ from qfluentwidgets import FluentIcon, NavigationInterface, NavigationItemPositi
 from qframelesswindow import FramelessWindow
 
 from src.unit.file_unit import FileUnit
+from src.unit.sql_unit import SqlUnit
 from src.view.base_view import CustomTitleBar
 from src.view.search_view import SearchWidget
 from src.view.setting_view import SettingWidget
@@ -100,6 +101,8 @@ class Window(FramelessWindow):
 
 
 if __name__ == '__main__':
+    SqlUnit.initSql('src/data')
+
     QApplication.setHighDpiScaleFactorRoundingPolicy(Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
     QApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
     QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps)
