@@ -213,11 +213,11 @@ class TorrentWidget(Widget):
         finalPath = f"{qbittorrentSetting['animeDictionary']}/{qbittorrentSetting['animeFile']}"
         nowAnimeName = self.comboBoxAnimeName.currentText()
         animeInfo = SqlUnit.getDataByAnimeName(self.dataPath, nowAnimeName)[0]
-        finalPath = finalPath.replace('[name]', f"{animeInfo[0]}").replace('[name_cn]', f"{animeInfo[1]}")
+        finalPath = finalPath.replace('[name]', f"{animeInfo[0]}")
+        finalPath = finalPath.replace('[name_cn]', f"{animeInfo[1]}")
         finalPath = finalPath.replace('[year]', f"{animeInfo[2]}")
         finalPath = finalPath.replace('[month]', f"{animeInfo[3]:02d}")
         finalPath = finalPath.replace('[day]', f"{animeInfo[4]}:02d")
-        finalPath = finalPath.replace('[bangumi_id]', f"{animeInfo[5]}")
 
         episode = self.comboBoxEpisodes.currentText()
         if episode.isdigit():

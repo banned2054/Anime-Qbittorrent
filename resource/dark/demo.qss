@@ -1,5 +1,5 @@
 Widget > QLabel {
-    font: 24px 'Segoe UI', 'Microsoft YaHei';
+    font: 12px 'Segoe UI', 'Microsoft YaHei';
 }
 
 InputDialog{
