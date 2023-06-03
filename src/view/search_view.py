@@ -115,6 +115,11 @@ class SearchWidget(Widget):
             return
         self.lineEdit.searchButton.setEnabled(False)
         bangumiList = await BangumiUnit.searchAnimeByKeyword(self.dataPath, search_keyword)
+        if isinstance(bangumiList, str):
+            self.lineEdit.searchButton.setEnabled(True)
+            errorBox = MessageBox('错误', '搜索失败，请检查是网络问题还是搜索词不对', self)
+            errorBox.exec()
+            return
         result = await BangumiUnit.getAnimeInfoByMultiBangumiId(self.dataPath, bangumiList)
         if isinstance(result, str):
             self.lineEdit.searchButton.setEnabled(True)
@@ -122,3 +127,4 @@ class SearchWidget(Widget):
             errorBox.exec()
             return
         self.dataTable.update_data(result)
+        self.lineEdit.searchButton.setEnabled(True)

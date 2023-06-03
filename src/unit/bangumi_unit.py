@@ -5,7 +5,7 @@ class BangumiUnit:
     @staticmethod
     async def getAnimeInfoByBangumiId(dataPath: str, bangumiId: int):
         subject_url = f"https://api.bgm.tv/v0/subjects/{bangumiId}"
-        responseData = await NetUnit.getRequest(dataPath, subject_url)
+        responseData = await NetUnit.getBangumiRequest(dataPath, subject_url)
         if isinstance(responseData, str):
             return responseData
         result = {"date"   : responseData.get("date"), "name": responseData.get("name"),
@@ -14,9 +14,10 @@ class BangumiUnit:
 
     @staticmethod
     async def searchAnimeByKeyword(dataPath: str, keyword: str):
+        keyword = keyword.replace(' ', '%20')
         params = {'type': 2}
         url = f"https://api.bgm.tv/search/subject/{keyword}"
-        responseData = await NetUnit.getRequest(dataPath, url, params)
+        responseData = await NetUnit.getBangumiRequest(dataPath, url, params)
         if isinstance(responseData, str):
             return responseData
         result = []
@@ -39,7 +40,7 @@ class BangumiUnit:
     async def getAnimeEpisodeInfoByBangumiId(dataPath: str, bangumiId: int):
         url = f"https://api.bgm.tv/v0/episodes"
         params = {"subject_id": bangumiId}
-        items = await NetUnit.getRequest(dataPath, url, params)
+        items = await NetUnit.getBangumiRequest(dataPath, url, params)
         if isinstance(items, str):
             return
         episodes = []

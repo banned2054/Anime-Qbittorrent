@@ -5,9 +5,9 @@ import sqlite3
 class SqlUnit:
     @staticmethod
     def initSql(dataPath: str):
-        if os.path.exists(f'{dataPath}/anime.db'):
+        if os.path.exists(f'{dataPath}/database/anime.db'):
             return
-        connection = sqlite3.connect(f'{dataPath}/anime.db')
+        connection = sqlite3.connect(f'{dataPath}/database/anime.db')
         cursor = connection.cursor()
         cursor.execute("""create table anime(
                         name         varchar(50) not null,
@@ -25,7 +25,7 @@ class SqlUnit:
 
     @staticmethod
     def getAllData(dataPath: str):
-        connection = sqlite3.connect(f'{dataPath}/anime.db')
+        connection = sqlite3.connect(f'{dataPath}/database/anime.db')
         cursor = connection.cursor()
         cursor.execute('SELECT * FROM anime ORDER BY publish_year DESC, public_month DESC, public_day, name')
         rows = cursor.fetchall()
@@ -34,7 +34,7 @@ class SqlUnit:
 
     @staticmethod
     def getDataByBangumiId(dataPath: str, bangumiId: int):
-        connection = sqlite3.connect(f'{dataPath}/anime.db')
+        connection = sqlite3.connect(f'{dataPath}/database/anime.db')
         cursor = connection.cursor()
         cursor.execute(
                 f'SELECT * FROM anime where bangumi_id = {bangumiId} ORDER BY publish_year DESC, public_month DESC, public_day, name')
@@ -44,7 +44,7 @@ class SqlUnit:
 
     @staticmethod
     def getDataByAnimeName(dataPath: str, animeName: str):
-        connection = sqlite3.connect(f'{dataPath}/anime.db')
+        connection = sqlite3.connect(f'{dataPath}/database/anime.db')
         cursor = connection.cursor()
         animeName = f'\"{animeName}\"'
         cursor.execute(
@@ -56,7 +56,7 @@ class SqlUnit:
     @staticmethod
     def insertSqlNewLine(dataPath: str, bangumiId: int, animeName: str,
                          animeCnName: str, year: int, month: int, day: int):
-        connection = sqlite3.connect(f'{dataPath}/anime.db')
+        connection = sqlite3.connect(f'{dataPath}/database/anime.db')
         cursor = connection.cursor()
         cursor.execute(
                 'INSERT INTO anime (name,name_cn,bangumi_id,publish_year,public_month,public_day) VALUES (?, ?, ?, ?, ?, ?)',

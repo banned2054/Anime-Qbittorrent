@@ -1,7 +1,7 @@
-ass
 test
 src/view/__pycache__
 src/unit/__pycache__
 
-src/data/qbittorrent.yaml
-src/data/anime.db
+src/data/config/qbittorrent.yaml
+src/data/config/mikan.yaml
+src/data/database/anime.db

@@ -30,6 +30,7 @@ class SettingWidget(Widget):
         self.lineEditPort.setValidator(QIntValidator())
         self.lineEditUsername = LineEdit(self)
         self.lineEditPassword = LineEdit(self)
+        self.lineEditPassword.setEchoMode(LineEdit.Password)
         self.lineEditDownloadPath = LineEdit(self)
         self.lineEditFileDictionary = LineEdit(self)
         self.lineEditFileName = LineEdit(self)
@@ -164,33 +165,26 @@ class SettingWidget(Widget):
         self.freshLineEdit()
 
     def lineEditFileDictionaryChanged(self):
-        name = 'けいおん！'
-        name_cn = '轻音少女'
-        year = '2009'
-        month = '04'
-        day = '02'
-        episode = '01'
-        previewText = self.lineEditFileDictionary.text().replace('[name]', name)
-        previewText = previewText.replace('[name_cn]', name_cn)
-        previewText = previewText.replace('[year]', year)
-        previewText = previewText.replace('[month]', month)
-        previewText = previewText.replace('[day]', day)
-        previewText = previewText.replace('[episode]', episode)
-
+        previewText = self.replaceText(self.lineEditFileDictionary.text())
         self.labelPreviewFileDictionary.setText(f"示例：{previewText}")
 
     def lineEditFileNameChanged(self):
+        previewText = self.replaceText(self.lineEditFileName.text())
+        self.labelPreviewFileName.setText(f"示例：{previewText}.mp4")
+
+    @staticmethod
+    def replaceText(originText):
         name = 'けいおん！'
         name_cn = '轻音少女'
         year = '2009'
         month = '04'
         day = '02'
         episode = '01'
-        previewText = self.lineEditFileName.text().replace('[name]', name)
-        previewText = previewText.replace('[name_cn]', name_cn)
-        previewText = previewText.replace('[year]', year)
-        previewText = previewText.replace('[month]', month)
-        previewText = previewText.replace('[day]', day)
-        previewText = previewText.replace('[episode]', episode)
+        finalText = originText.replace('[name]', name)
+        finalText = finalText.replace('[name_cn]', name_cn)
+        finalText = finalText.replace('[year]', year)
+        finalText = finalText.replace('[month]', month)
+        finalText = finalText.replace('[day]', day)
+        finalText = finalText.replace('[episode]', episode)
 
-        self.labelPreviewFileName.setText(f"示例：{previewText}.mp4")
+        return finalText

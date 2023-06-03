@@ -158,7 +158,7 @@ class TorrentWidget(Widget):
                     self.buttonAddTags.setEnabled(True)
                     return
                 self.qbittorrentSettingData['tags'].append(newTag)
-                FileUnit.freshQbittorrentSettingFile(self.dataPath, self.qbittorrentSettingData)
+                FileUnit.freshMikanSettingFile(self.dataPath, self.qbittorrentSettingData)
                 self.buttonAddTags.setEnabled(True)
 
     @asyncSlot()
