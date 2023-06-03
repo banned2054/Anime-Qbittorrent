@@ -1,3 +1,8 @@
 customUrl: mikanani.me
 useReverseProxy: false
-token:
+token: None
+finalPubDate: 2001-01-01T00:00:00
+proxy:
+  useProxy: true
+  proxyUrl: 127.0.0.1
+  port: 1080

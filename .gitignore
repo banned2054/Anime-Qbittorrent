@@ -4,4 +4,4 @@ src/unit/__pycache__
 
 src/data/config/qbittorrent.yaml
 src/data/config/mikan.yaml
-src/data/database/anime.db
+src/data/database/animeInfo.db

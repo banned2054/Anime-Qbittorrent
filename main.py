@@ -101,7 +101,7 @@ class Window(FramelessWindow):
 
 
 if __name__ == '__main__':
-    SqlUnit.initSql('src/data')
+    SqlUnit.initAnimeInfoSql('src/data')
 
     QApplication.setHighDpiScaleFactorRoundingPolicy(Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
     QApplication.setAttribute(Qt.AA_EnableHighDpiScaling)

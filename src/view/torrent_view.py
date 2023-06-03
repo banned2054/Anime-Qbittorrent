@@ -129,7 +129,7 @@ class TorrentWidget(Widget):
         self.comboBoxEpisodes.currentIndexChanged.connect(self.comboBoxChanged)
 
     def freshAnimeComboBox(self):
-        animeDatas = SqlUnit.getAllData(self.dataPath)
+        animeDatas = SqlUnit.getAllDataFromAnimeInfo(self.dataPath)
         self.comboBoxAnimeName.clear()
         for animeData in animeDatas:
             self.comboBoxAnimeName.addItem(str(animeData[0]))
@@ -168,7 +168,7 @@ class TorrentWidget(Widget):
             newAnimeBangumiId = dialog.result
             if newAnimeBangumiId == "":
                 return
-            animeByBangumiId = SqlUnit.getDataByBangumiId(self.dataPath, newAnimeBangumiId)
+            animeByBangumiId = SqlUnit.getAnimeInfoByBangumiId(self.dataPath, newAnimeBangumiId)
             if len(animeByBangumiId) > 0:
                 return
             self.buttonAddAnime.setEnabled(False)
@@ -179,7 +179,7 @@ class TorrentWidget(Widget):
                 errorBox.exec()
                 return
             animeDate = datetime.strptime(newAnimeInfo['date'], '%Y-%m-%d')
-            SqlUnit.insertSqlNewLine(
+            SqlUnit.insertSqlNewLineInAnimeInfo(
                     self.dataPath,
                     newAnimeBangumiId,
                     newAnimeInfo['name'],
@@ -203,7 +203,7 @@ class TorrentWidget(Widget):
     @asyncSlot()
     async def comboBoxAnimeTextChanged(self):
         nowAnimeName = self.comboBoxAnimeName.currentText()
-        animeInfo = SqlUnit.getDataByAnimeName(self.dataPath, nowAnimeName)[0]
+        animeInfo = SqlUnit.getAnimeInfoByAnimeName(self.dataPath, nowAnimeName)[0]
         self.currentBangumiId = animeInfo[5]
         await self.freshEpisodeComboBox()
         self.comboBoxChanged()
@@ -212,7 +212,7 @@ class TorrentWidget(Widget):
         qbittorrentSetting = FileUnit.readQbittorrentSettingFile(self.dataPath)
         finalPath = f"{qbittorrentSetting['animeDictionary']}/{qbittorrentSetting['animeFile']}"
         nowAnimeName = self.comboBoxAnimeName.currentText()
-        animeInfo = SqlUnit.getDataByAnimeName(self.dataPath, nowAnimeName)[0]
+        animeInfo = SqlUnit.getAnimeInfoByAnimeName(self.dataPath, nowAnimeName)[0]
         finalPath = finalPath.replace('[name]', f"{animeInfo[0]}")
         finalPath = finalPath.replace('[name_cn]', f"{animeInfo[1]}")
         finalPath = finalPath.replace('[year]', f"{animeInfo[2]}")
